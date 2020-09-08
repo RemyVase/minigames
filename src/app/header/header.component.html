@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid bg-primary">
+        <ul class="nav navbar-nav" *ngIf="router.url.substring(0,14) != '/tic-tac-party'">
+            <li routerLinkActive="active">
+                <a routerLink="mainmenu" class="nav-item">Menu Principal</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav" *ngIf="router.url.substring(0,14) === '/tic-tac-party'">
+            <li routerLinkActive="active">
+                <a routerLink="liste-parties-tictac" class="nav-item" (click)="backToList(router.url.substring(+router.url.length -2 ,router.url.length))">Retour à la liste des parties</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right" *ngIf="router.url.substring(0,14) != '/tic-tac-party'">
+            <li routerLinkActive="active">
+                <a routerLink="auth/signup" class="nav-item" *ngIf="!this.authService.isAuth">Créer un compte</a>
+            </li>
+            <li routerLinkActive="active">
+                <a routerLink="auth/signin" class="nav-item" *ngIf="!this.authService.isAuth" >Connexion</a>
+            </li>
+            <li>
+                <a routerLink="page-perso" class="nav-item" *ngIf="this.authService.isAuth">Page perso</a>
+            </li>
+            <li>
+                <a style='cursor:pointer' class="nav-item" *ngIf="this.authService.isAuth" (click)="onSignOut()">Déconnexion</a>
+            </li>
+        </ul>
+    </div>
+</nav>

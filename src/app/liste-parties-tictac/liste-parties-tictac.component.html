@@ -1,0 +1,60 @@
+<div class="container">
+    <h2 class="nav-item" style="margin-bottom: 5%" align="center">Menu principal</h2>
+
+    <div class="row justify-content-around" align="center" style="margin-bottom: 5%">
+        <div class="col-sm-2 col-lg-2 col-md-2">
+        </div>
+        <div class="col-sm-8 col-lg-8 col-md-8">
+            <div class="card rounded card-ajoutPartie" routerLink='/ajout-partie-tictac'>
+                <i class="fa fa-plus fa-4x"></i>
+                    
+                <div class="card-body">
+                    <h5 class="card-title">Créer une partie</h5>
+                    <p class="card-text">Créez une partie afin d'affronter un autre joueur ! Ou alors faites une partie privée dans laquelle seul vos amis peuvent vous rejoindre !</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2 col-lg-2 col-md-2">
+        </div>
+    </div>
+
+    <div class="row justify-content-around" align="center" style="margin-bottom: 1%" *ngFor="let party of this.authService.allTicTacParty">
+        <div class="col-sm-2 col-lg-2 col-md-2">
+        </div>
+        <div class="col-sm-8 col-lg-8 col-md-8">
+            <div class="card rounded card-listParties">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="card-title col-lg-4 col-md-4 col-sm-4">
+                            <h5>Nom de la partie</h5>
+                            <p> {{ party.name }}</p>
+                        </div>
+                        <div class="card-title col-lg-4 col-md-4 col-sm-4">
+                            <h5>Nombre de joueur</h5>
+                            <p> {{ party.places }}/2</p>
+                        </div>
+                        <div class="card-text col-lg-4 col-md-4 col-sm-4" *ngIf="party.places === 1 && party.needPassword === 0" routerLink='/tic-tac-party/{{party.id}}' (click)="enterParty(this.authService.idUser, party.id)">
+                            <h5>Rejoindre la partie</h5>
+                            <i class="fa fa-sign-in fa-3x" *ngIf="party.places === 1"></i>
+                        </div>
+                        <div class="card-text col-lg-4 col-md-4 col-sm-4" *ngIf="party.places === 1 && party.needPassword === 1" (click)="enterPartyPassword(this.authService.idUser, party.id)">
+                            <h5>Rejoindre la partie</h5>
+                            <i class="fa fa-unlock-alt fa-3x" *ngIf="party.places === 1"></i>
+                        </div>
+                        <div class="card-text col-lg-4 col-md-4 col-sm-4" *ngIf="party.places === 2">
+                            <h5>Rejoindre la partie</h5>
+                            <i class="fa fa-lock fa-3x"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2 col-lg-2 col-md-2">
+        </div>
+    </div>
+
+
+
+
+</div>

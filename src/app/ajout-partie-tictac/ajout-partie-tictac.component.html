@@ -1,0 +1,26 @@
+<div class="row" style="margin-bottom: 5%">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2 class="nav-item">Créer une partie</h2>
+        <form [formGroup]="addTicTacForm" (ngSubmit)="onSubmit()">
+            <div class="form-group nav-item">
+                <label for="nom">Nom de partie</label>
+                <input type="text" id="nom" class="form-control" formControlName="nom">
+            </div>
+            <div class="form-group nav-item">
+                <label for="passwordAsk">Mot de passe</label>
+                <select type="select" id="passwordAsk" class="form-control" formControlName="passwordAsk" (change)="checkSelect($event.target.value)">
+                    <option value="0">Non</option>
+                    <option value="1">Oui</option>
+                </select>
+            </div>
+            <div class="form-group nav-item" [hidden]="this.selectHidden">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" class="form-control" formControlName="password">
+            </div>
+
+            <button class="btn btn-success nav-item" type="submit" [disabled]="addTicTacForm.invalid">Créer</button>
+        </form>
+        <p class="text-danger" [hidden]="this.tictacService.hiddenErrorMessage">Une partie a déjà ce nom ! Veuillez changer s'il-vous plait</p>
+        <!--<p class="text-danger" *ngIf="this.authService.errorLogin" [hidden]="this.authService.isHiddenLogin">Erreur de connexion, veuillez réessayer</p>-->
+    </div>
+</div>

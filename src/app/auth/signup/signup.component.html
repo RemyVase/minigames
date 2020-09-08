@@ -1,0 +1,26 @@
+<div class="row" style="margin-bottom: 5%">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2 class="nav-item">S'inscrire</h2>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div class="form-group nav-item">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
+            </div>
+            <div class="form-group nav-item">
+                <label for="email">Email</label>
+                <input type="text" id="email" class="form-control" formControlName="email">
+            </div>
+            <div class="form-group nav-item">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" class="form-control" formControlName="password">
+            </div>
+            <div class="form-group nav-item">
+                <label for="passwordConfirm">Confirmation de mot de passe</label>
+                <input type="password" id="passwordConfirm" class="form-control" formControlName="passwordConfirm">
+            </div>
+            <button class="btn btn-success" type="submit" [disabled]="signupForm.invalid">S'inscrire</button>
+        </form>
+        <p class="text-danger" *ngIf="this.authService.errorRegister" [hidden]="this.authService.isHiddenRegister">Le pseudo ou le mail est déjà utilisé</p>
+        <p class="text-danger" [hidden]="this.passwordError">Les mots de passe doivent être identiques</p>
+    </div>
+</div>

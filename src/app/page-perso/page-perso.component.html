@@ -1,0 +1,26 @@
+<div class="row" style="margin-bottom: 5%">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2 class="nav-item">Informations de compte</h2>
+        <p class="nav-item">Pseudo : {{ this.pseudo }}</p>
+        <p class="nav-item">Email : {{ this.email }}</p>
+        <button class="btn btn-success nav-item" (click)="pressFormView()">Changer de mot de passe</button>
+        <form [hidden]="this.formHidden" [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+            <div class="form-group nav-item">
+                <label for="oldPassword">Ancien mot de passe</label>
+                <input type="password" id="oldPassword" class="form-control" formControlName="oldPassword">
+            </div>
+            <div class="form-group nav-item">
+                <label for="newPassword">Nouveau mot de passe</label>
+                <input type="password" id="newPassword" class="form-control" formControlName="newPassword">
+            </div>
+            <div class="form-group nav-item">
+                <label for="newPasswordConfirm">Confirmation nouveau mot de passe</label>
+                <input type="password" id="newPasswordConfirm" class="form-control" formControlName="newPasswordConfirm">
+            </div>
+            <button class="btn btn-success nav-item" type="submit" >Se connecter</button>
+            <p class="text-success" *ngIf="!this.authService.errorChangePassword" [hidden]="this.authService.isHiddenErrorChange">Mot de passe changé avec succès</p>
+            <p class="text-danger" *ngIf="this.authService.errorChangePassword" [hidden]="this.authService.isHiddenErrorChange">L'ancien mot de passe est incorrect</p>
+            <p class="text-danger" [hidden]="this.passwordError">Le nouveau mot de passe et la confirmation de mot de passe doivent être identiques</p>
+        </form>
+    </div>
+</div>

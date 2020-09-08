@@ -1,0 +1,99 @@
+<div class="container">
+    <h2 class="nav-item" style="margin-bottom: 5%" align="center">Menu principal</h2>
+
+    <div class="row justify-content-around" align="center" style="margin-bottom: 5%">
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-peopleConnected">
+                <i class="fa fa-male fa-4x textWhite"></i>
+                <div class="card-body">
+                    <h5 class="card-title textWhite">Personnes connectées</h5>
+                    <ul *ngFor="let people of this.authService.allUsersConnected; let i = index">
+                        <li class="textWhite">{{people.pseudo}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu" routerLink='/liste-parties-tictac'>
+                <img class="card-img-top" src="/assets/img/tictactoe.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Tic Tac Toe</h5>
+                    <p class="card-text">Venez affronter d'autres joueurs sur le célèbre jeu, Tic Tac Toe ! Soyez le
+                        premier à complèter une ligne.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu" routerLink='/liste-parties-pendu'>
+                <img class="card-img-top" src="/assets/img/pendu.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Jeu du pendu</h5>
+                    <p class="card-text">Venez donc essayer de deviner un mot ! Attention, chaque erreur vous fera vous rapporcher de la mort !</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+        </div>
+    </div>
+
+    <div class="row justify-content-around" align="center" style="margin-bottom: 5%">
+        <div class="col-sm-3 col-lg-3 col-md-3">
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu">
+                <img class="card-img-top" src="/assets/img/tictactoe.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu">
+                <img class="card-img-top" src="/assets/img/tictactoe.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+        </div>
+    </div>
+
+    <div class="row justify-content-around" align="center" style="margin-bottom: 5%">
+        <div class="col-sm-3 col-lg-3 col-md-3">
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu">
+                <img class="card-img-top" src="/assets/img/tictactoe.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+            <div class="card rounded card-mainmenu">
+                <img class="card-img-top" src="/assets/img/tictactoe.png" alt="Card image cap"
+                    style="width:5em; height:5em;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-3 col-md-3">
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,182 @@
+<div class="row" style="margin-bottom: 5%">
+    <div class="col-sm-12">
+        <h2 class="nav-item" style="text-align: center;">{{ this.nameRoom }}</h2>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 3%">
+    <div class="col-sm-6">
+        <h3 class="nav-item" style="text-align: center;">Joueur X</h3>
+        <h4 class="nav-item" style="text-align: center;">{{ this.pseudoPlayer1 }}</h4>
+    </div>
+    <div class="col-sm-6">
+        <h3 class="nav-item" style="text-align: center;">Joueur O</h3>
+        <h4 class="nav-item" style="text-align: center;" *ngIf="!this.pseudoPlayer2">Joueur en attente..</h4>
+        <h4 class="nav-item" style="text-align: center;" *ngIf="this.pseudoPlayer2">{{ this.pseudoPlayer2 }}</h4>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 3%" *ngIf='this.readyPlayer1 === false || this.readyPlayer2 === false || this.partyFinish === true'>
+    <div class="col-sm-6" *ngIf="this.pseudoPlayer1 === this.authService.pseudoUser">
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer1 === false && this.pseudoPlayer2 === null'>Pas prêt</h3>
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer1 === false' (click)='PlayerReady(1)' style="cursor: pointer;">Pas prêt</h3>
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer1 === true' (click)='PlayerNotReady(1)' style="cursor: pointer;">Prêt</h3>
+    </div>
+    <div class="col-sm-6" *ngIf="this.pseudoPlayer1 != this.authService.pseudoUser">
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer1 === false'>Pas prêt</h3>
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer1 === true'>Prêt</h3>
+    </div>
+    <div class="col-sm-6" *ngIf="this.pseudoPlayer2 === this.authService.pseudoUser">
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer2 === false' (click)='PlayerReady(2)' style="cursor: pointer;">Pas prêt</h3>
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer2 === true' (click)='PlayerNotReady(2)' style="cursor: pointer;">Prêt</h3>
+    </div>
+    <div class="col-sm-6" *ngIf="this.pseudoPlayer2 != this.authService.pseudoUser">
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer2 === false'>Pas prêt</h3>
+        <h3 class="buttonReady" style="text-align: center;" *ngIf='this.readyPlayer2 === true'>Prêt</h3>
+    </div>
+</div>
+
+<div *ngIf='this.readyPlayer1 === true && this.readyPlayer2 === true || this.partyFinish === true'>
+    <div class="row" style="margin-bottom: 2%">
+        <div class="col-sm-12">
+            <h2 class="nav-item" style="text-align: center;" *ngIf="this.partyFinish === false">Au joueur " <span style="color: #5cb85c"> {{ this.currentPlayer }} </span>" de jouer</h2>
+            <h2 class="nav-item" style="text-align: center;" *ngIf="this.partyFinish === true">La partie est <span style="color: #5cb85c">terminée</span></h2>
+        </div>
+    </div>
+    <div class="row col-sm-4 col-sm-offset-4">
+        <div class="row" >
+
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[1] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,1)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[1] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[1] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[1] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[1] != ''" class="col-sm-2 boxTicTac">
+                <span *ngIf="this.currentParty[1] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></span>
+                <i *ngIf="this.currentParty[1] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[1] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[1] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[2] === '' && this.partyFinish === false " class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,2)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[2] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[2] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[2] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[2] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[2] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[2] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[2] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[2] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[3] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,3)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[3] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[3] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[3] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[3] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[3] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[3] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[3] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[3] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+        </div>
+        <div class="row ">
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[4] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,4)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[4] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[4] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[4] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[4] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[4] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[4] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[4] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[4] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[5] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,5)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[5] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[5] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[5] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[5] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[5] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[5] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[5] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[5] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[6] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,6)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[6] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[6] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[6] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[6] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[6] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[6] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[6] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[6] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+        </div>
+        <div class="row">
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[7] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,7)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[7] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[7] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[7] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[7] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[7] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[7] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[7] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[7] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[8] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,8)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[8] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[8] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[8] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[8] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[8] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[8] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[8] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[8] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+    
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[9] === '' && this.partyFinish === false" class="col-sm-2 boxTicTac" style="cursor: pointer;" (click)="clickButton(this.role,9)"></div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[9] === '' && this.partyFinish === true" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[9] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[9] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer === this.role && this.currentParty[9] != ''" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[9] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[9] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+            <div *ngIf="this.currentPlayer != this.role" class="col-sm-2 boxTicTac">
+                <i *ngIf="this.currentParty[9] === 'O'" class="far fa-circle fa-5x" aria-hidden="true"></i>
+                <i *ngIf="this.currentParty[9] === 'X'" class="fa fa-times fa-5x"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 2%" *ngIf='this.partyFinish'>
+    <div class="col-sm-12">
+        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer != ''">LE JOUEUR " <span style="color: #5cb85c"> {{ this.winnerPlayer }} </span>" GAGNE LA PARTIE. Si vous souhaitez rejouer, veuiller vous remettre prêt.</h2>
+        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer === ''">LA PARTIE SE FINIS SUR UNE " <span style="color: #5cb85c">EGALITE</span>. Si vous souhaitez rejouer, veuiller vous remettre prêt.</h2>
+    </div>
+</div>

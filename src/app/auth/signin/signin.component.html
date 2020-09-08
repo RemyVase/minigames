@@ -1,0 +1,17 @@
+<div class="row" style="margin-bottom: 5%">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2 class="nav-item">Se connecter</h2>
+        <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+            <div class="form-group nav-item">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
+            </div>
+            <div class="form-group nav-item">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" class="form-control" formControlName="password">
+            </div>
+            <button class="btn btn-success nav-item" type="submit" [disabled]="signinForm.invalid">Se connecter</button>
+        </form>
+        <p class="text-danger" *ngIf="this.authService.errorLogin" [hidden]="this.authService.isHiddenLogin">Erreur de connexion, veuillez réessayer</p>
+    </div>
+</div>
