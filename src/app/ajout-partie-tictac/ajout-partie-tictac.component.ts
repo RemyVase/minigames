@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { TicTacService } from '../service/tictac.service';
 
 @Component({
@@ -9,15 +8,21 @@ import { TicTacService } from '../service/tictac.service';
   templateUrl: './ajout-partie-tictac.component.html',
   styleUrls: ['./ajout-partie-tictac.component.scss']
 })
+
 export class AjoutPartieTictacComponent implements OnInit {
 
   addTicTacForm: FormGroup;
   selectHidden: boolean = true;
+  count: number = 0;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public tictacService: TicTacService) { }
 
   ngOnInit(): void {
     this.initForm();
+  }
+
+  ngOnDestroy(){
+    console.log('ON DESTROY DE AJOUT PARTIE TICTAC');
   }
 
   initForm() {
@@ -32,8 +37,8 @@ export class AjoutPartieTictacComponent implements OnInit {
     const nom = this.addTicTacForm.get('nom').value;
     const passwordAsk = this.addTicTacForm.get('passwordAsk').value;
     const password = this.addTicTacForm.get('password').value;
-
     this.tictacService.addTicTac(nom, password, passwordAsk);
+
   }
 
   checkSelect(value){

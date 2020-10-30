@@ -46,7 +46,7 @@ require('socketio-auth')(io, {
     timeout: 'none'
 });
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
     console.log(`Someone open socket from ${socket.handshake.address}`);
 
     socket.on('register', (data) => {
@@ -79,6 +79,16 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('getIdPartyOfUser', (data) => {
+        var db = dbConnect();
+        let checkNomValide = db.query("call getPartyIdOfUser(?)", [data.idCrea], function (err, result) {
+            console.log('GET ID PARTY OF USER');
+            if(result[0][0] != undefined){
+                socket.emit('returnIdPartyUser', { idParty : Object.values(JSON.parse(JSON.stringify(result[0][0])))});
+            }
+        });
+    });
+
     socket.on('addPartyTicTac', (data) => {
         var db = dbConnect();
         var nom = data.name;
@@ -93,15 +103,19 @@ io.on('connection', (socket) => {
                 let addParty = db.query("call addTicTac(?,?,?)", [nom, password, passwordAsk], function (err, result) {
                     //console.log('Partie de tic tac toe ajoutée à la db');
                     let getIdParty = db.query("call checkNomPartyTictac(?)", [nom], function (err, result) {
-                        socket.join('tictac' + result[0][0].id);
-                        console.log(result[0][0].id);
+                        socket.join('tictac' + result[0][0].id, function() {
+                            console.log("Quelqu'un a rejoind la room")
+                            //socket.in('tictac' + result[0][0].id).emit('tictacAdded', Object.values(JSON.parse(JSON.stringify(result[0]))));
+                            socket.emit('tictacAdded', Object.values(JSON.parse(JSON.stringify(result[0]))));
+                        });
+                        
                         let idParty = Object.values(JSON.parse(JSON.stringify(result[0][0])));
                         let addPartyWithUser = db.query("call liaisonCreaTictac(?,?)", [idUser, result[0][0].id], function (err, result) {
                             let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
                                 let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
                                 socket.emit('allTicTacParty', ret);
                                 socket.broadcast.emit('allTicTacParty', ret);
-                                socket.emit('tictacAdded', Object.values(JSON.parse(JSON.stringify(result[0]))));
+
                             });
                         });
                     });
@@ -111,9 +125,6 @@ io.on('connection', (socket) => {
                 socket.emit('tictacAdded', [{ id: -1 }]);
             }
         });
-
-
-
     });
 
     socket.on('decoUser', (data) => {
@@ -133,38 +144,42 @@ io.on('connection', (socket) => {
 
     socket.on('checkIfCreatorTicTac', (data) => {
         var db = dbConnect();
-        var idUser = data.idUser;
-        var idParty = data.idParty;
-        var checkSiCrea = db.query("call checkCreaTicTac(?)", [idUser], function (err, result) {
-            if (result[0][0] === undefined) {
-                var removeJoueurDeLaPartie = db.query("call removePlayerFromPartyTicTac(?)", [idParty], function (err, result) {
-                    socket.leave('tictac' + idParty);
-                    socket.to('tictac' + idParty).emit('playerLeaveRoom', {data: 'Un joueur a quitté la partie'});
-                    var modifNbPlaces = db.query('call downgradePlacesTicTac(?)', [idParty], function (err, result) {
+        var checkSiCrea = db.query("call checkCreaTicTac(?)", [data.idUser], function (err, result) {
+            if(result != undefined){
+                if (result[0][0] === undefined) {
+                    var removeJoueurDeLaPartie = db.query("call removePlayerFromPartyTicTac(?)", [data.idParty], function (err, result) {
+                        var modifNbPlaces = db.query('call downgradePlacesTicTac(?)', [data.idParty], function (err, result) {
+                            let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
+                                let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
+                                socket.emit('allTicTacParty', ret);
+                                socket.broadcast.emit('allTicTacParty', ret);
+                                let allTicTac = db.query("call getPseudoUser(?)", [data.idUser], function (err, result) {
+                                    console.log('CheckIfCreator testttt');
+                                    socket.to('tictac' + data.idParty).emit('playerHasLeftPartyTicTac', { pseudo : result[0][0] });
+                                    socket.in('tictac' + data.idParty).emit('playerLeaveRoom', {data: 'Un joueur a quitté la partie'});
+                                    socket.leave('tictac' + data.idParty, function() {
+                                        console.log("Quelqu'un a quitté la room")
+                                    });
+                                });
+                            });
+                        });
+                    });
+                } else {
+                    var deleteParty = db.query("call removeTicTac(?)", [data.idParty], function (err, result) {
                         let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
                             let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
                             socket.emit('allTicTacParty', ret);
                             socket.broadcast.emit('allTicTacParty', ret);
-                            console.log("le joueur a quitté la partie.");
-                            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player2: false });
-                            socket.emit('playerTicTacReadyStatus', { player2: false });
-                            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player1: false });
-                            socket.emit('playerTicTacReadyStatus', { player1: false });
+                            socket.in('tictac' + data.idParty).emit('playerHasLeftPartyTicTac', { pseudo : result[0][0] });
+                            socket.in('tictac' + data.idParty).emit('playerLeaveRoom', {leave: "ok" ,data: 'Le créateur de la partie à quitter la partie et celle-ci a été détruite'});
+                            socket.leave('tictac' + data.idParty, function() {
+                                console.log("Quelqu'un a quitté la room")
+                            });
                         });
                     });
-                });
-            } else {
-                var deleteParty = db.query("call removeTicTac(?)", [idParty], function (err, result) {
-                    socket.leave('tictac' + idParty);
-                    socket.to('tictac' + idParty).emit('playerLeaveRoom', {data: 'Le créateur de la partie à quitter la partie et celle-ci a été détruite'});
-                    let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
-                        let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
-                        socket.emit('allTicTacParty', ret);
-                        socket.broadcast.emit('allTicTacParty', ret);
-                    });
-                    console.log("Le créateur est parti, la partie à été supprimée.");
-                });
+                }
             }
+            
         });
     });
 
@@ -178,14 +193,15 @@ io.on('connection', (socket) => {
             if (result[0][0] === undefined) {
                 console.log("Le joueur n'est pas encore dans une partie.");
                 var addJoueurALaPartie = db.query("call addPlayerToTicTacParty(?,?)", [idUser, idParty], function (err, result) {
-                    var modifNbPlaces = db.query('call updragePlacesTicTac(?)', [idParty], function (err, result) {
-                        socket.join('tictac' + idParty);
-                        socket.to('tictac' + idParty).emit('playerEnterInRoom', {data: 'Un joueur a rejoind la partie'});
+                    var modifNbPlaces = db.query('call upgradePlacesTicTac(?)', [idParty], function (err, result) {
                         let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
                             let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
+                            socket.join('tictac' + idParty, function() {
+                                console.log("Quelqu'un a rejoind la room")
+                            });
                             socket.emit('allTicTacParty', ret);
                             socket.broadcast.emit('allTicTacParty', ret);
-                            console.log("le joueur a quitté la partie.");
+                            socket.in('tictac' + idParty).emit('playerEnterInRoom', {data: 'Un joueur a rejoind la partie'});
                         });
 
                     });
@@ -235,15 +251,16 @@ io.on('connection', (socket) => {
                     console.log(result[0][0]);
                     if (result[0][0] != undefined) {
                         var addJoueurALaPartie = db.query("call addPlayerToTicTacParty(?,?)", [idUser, idParty], function (err, result) {
-                            socket.join('tictac' + idParty);
-                            socket.to('tictac' + idParty).emit('playerEnterInRoom', {data: 'Un joueur a rejoind la partie'});
-                            var modifNbPlaces = db.query('call updragePlacesTicTac(?)', [idParty], function (err, result) {
+                            socket.join('tictac' + idParty, function() {
+                                console.log("Quelqu'un a rejoind la room")
+                            });
+                            socket.in('tictac' + idParty).emit('playerEnterInRoom', {data: 'Un joueur a rejoind la partie'});
+                            var modifNbPlaces = db.query('call upgradePlacesTicTac(?)', [idParty], function (err, result) {
                                 let allTicTac = db.query("call getAllTicTacParty()", function (err, result) {
                                     let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
                                     socket.emit('tictacPassword', { data: "ok" });
                                     socket.emit('allTicTacParty', ret);
                                     socket.broadcast.emit('allTicTacParty', ret);
-                                    //console.log("le joueur a quitté la partie.");
                                 });
                             });
                         });
@@ -264,44 +281,75 @@ io.on('connection', (socket) => {
         var checkSiJoueurPasEncoreDansUnePartie = db.query("call getInfosRoomTicTac(?)", [idParty], function (err, result) {
             let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
             socket.emit('returnAllInfoRoomTicTac', ret );
-            socket.broadcast.emit('returnAllInfoRoomTicTac', ret );
+            socket.in('tictac'+idParty).emit('returnAllInfoRoomTicTac', ret );
         });
     });
 
     socket.on('tictacPlayer',(data) =>{
         if(data.role === "X"){
-            socket.to('tictac' + data.idParty).emit('newTicTacPlayer', { role: "O"});
+            socket.in('tictac' + data.idParty).emit('newTicTacPlayer', { role: "O"});
             socket.emit('newTicTacPlayer', { role: "O"});
-            socket.to('tictac' + data.idParty).emit('currentParty', { currentParty: data.currentParty});
+            socket.in('tictac' + data.idParty).emit('currentParty', { currentParty: data.currentParty});
             socket.emit('currentParty', { currentParty: data.currentParty });
         }else{
-            socket.to('tictac' + data.idParty).emit('newTicTacPlayer', { role: "X"});
+            socket.in('tictac' + data.idParty).emit('newTicTacPlayer', { role: "X"});
             socket.emit('newTicTacPlayer', { role: "X"});
-            socket.to('tictac' + data.idParty).emit('currentParty', { currentParty: data.currentParty});
+            socket.in('tictac' + data.idParty).emit('currentParty', { currentParty: data.currentParty});
             socket.emit('currentParty', { currentParty: data.currentParty });
         }
     });
 
     socket.on('playerTicTacReady', (data) => {
         if(data.idPlayer === 1){
-            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player1: true });
+            socket.in('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player1: true });
             socket.emit('playerTicTacReadyStatus', { player1: true });
         }
         if(data.idPlayer === 2){
-            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player2: true });
+            socket.in('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player2: true });
             socket.emit('playerTicTacReadyStatus', { player2: true });
         }
     });
 
     socket.on('playerTicTacNotReady', (data) => {
         if(data.idPlayer === 1){
-            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player1: false });
+            socket.in('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player1: false });
             socket.emit('playerTicTacReadyStatus', { player1: false });
         }
         if(data.idPlayer === 2){
-            socket.to('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player2: false });
+            socket.in('tictac' + data.idParty).emit('playerTicTacReadyStatus', { player2: false });
             socket.emit('playerTicTacReadyStatus', { player2: false });
         }
+    });
+
+    socket.on('addPointTicTac', (data) => {
+        var db = dbConnect();
+        var pseudoPlayer = data.pseudoPlayer;
+        var idParty = data.idParty;
+
+        var addPointTicTac = db.query("call addPointTicTac(?)", [pseudoPlayer], function (err, result) {
+            var checkSiJoueurPasEncoreDansUnePartie = db.query("call getInfosRoomTicTac(?)", [idParty], function (err, result) {
+                if(result != undefined){
+                    let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
+                    socket.emit('returnAllInfoRoomTicTac', ret );
+                    socket.broadcast.emit('returnAllInfoRoomTicTac', ret );
+                }
+
+            });
+        });
+    });
+
+    socket.on('substractPointTicTac', (data) => {
+        var db = dbConnect();
+        var pseudoPlayer = data.pseudoPlayer;
+        var idParty = data.idParty;
+
+        var addPointTicTac = db.query("call substractPointTicTac(?)", [pseudoPlayer], function (err, result) {
+            var checkSiJoueurPasEncoreDansUnePartie = db.query("call getInfosRoomTicTac(?)", [idParty], function (err, result) {
+                let ret = Object.values(JSON.parse(JSON.stringify(result[0])));
+                socket.emit('returnAllInfoRoomTicTac', ret );
+                socket.broadcast.emit('returnAllInfoRoomTicTac', ret );
+            });
+        });
     });
 });
 

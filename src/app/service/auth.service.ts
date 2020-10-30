@@ -30,6 +30,7 @@ export class AuthService {
     pseudoUser: String;
     idUser: String;
     emailUser: String;
+    
 
     emitIsAuth() {
         this.isAuthSubject.next(this.isAuth);
@@ -159,6 +160,10 @@ export class AuthService {
             alert(data.data);
         });
         this.socket.on('playerLeaveRoom', (data) => {
+            if(data.leave != undefined){
+                this.router.navigate(['liste-parties-tictac']);
+                alert(data.data);
+            }
             alert(data.data);
         });
     }

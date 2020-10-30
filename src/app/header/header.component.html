@@ -7,7 +7,7 @@
         </ul>
         <ul class="nav navbar-nav" *ngIf="router.url.substring(0,14) === '/tic-tac-party'">
             <li routerLinkActive="active">
-                <a routerLink="liste-parties-tictac" class="nav-item" (click)="backToList(router.url.substring(+router.url.length -2 ,router.url.length))">Retour à la liste des parties</a>
+                <a routerLink="liste-parties-tictac" class="nav-item" (click)="backToList(router.url.substring(15,router.url.length))">Retour à la liste des parties</a>
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right" *ngIf="router.url.substring(0,14) != '/tic-tac-party'">

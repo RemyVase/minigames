@@ -5,13 +5,13 @@
 </div>
 <div class="row" style="margin-bottom: 3%">
     <div class="col-sm-6">
-        <h3 class="nav-item" style="text-align: center;">Joueur X</h3>
-        <h4 class="nav-item" style="text-align: center;">{{ this.pseudoPlayer1 }}</h4>
+        <h3 class="nav-item" style="text-align: center;">Joueur O</h3>
+        <h4 class="nav-item" style="text-align: center;">{{ this.pseudoPlayer1 }}({{this.pointsPlayer1}})</h4>
     </div>
     <div class="col-sm-6">
-        <h3 class="nav-item" style="text-align: center;">Joueur O</h3>
+        <h3 class="nav-item" style="text-align: center;">Joueur X</h3>
         <h4 class="nav-item" style="text-align: center;" *ngIf="!this.pseudoPlayer2">Joueur en attente..</h4>
-        <h4 class="nav-item" style="text-align: center;" *ngIf="this.pseudoPlayer2">{{ this.pseudoPlayer2 }}</h4>
+        <h4 class="nav-item" style="text-align: center;" *ngIf="this.pseudoPlayer2">{{ this.pseudoPlayer2 }}({{this.pointsPlayer2}})</h4>
     </div>
 </div>
 <div class="row" style="margin-bottom: 3%" *ngIf='this.readyPlayer1 === false || this.readyPlayer2 === false || this.partyFinish === true'>
@@ -39,6 +39,9 @@
         <div class="col-sm-12">
             <h2 class="nav-item" style="text-align: center;" *ngIf="this.partyFinish === false">Au joueur " <span style="color: #5cb85c"> {{ this.currentPlayer }} </span>" de jouer</h2>
             <h2 class="nav-item" style="text-align: center;" *ngIf="this.partyFinish === true">La partie est <span style="color: #5cb85c">terminée</span></h2>
+            <h2 class="nav-item" style="text-align: center;" *ngIf="this.currentTime > 30"> {{ this.currentTime }}</h2>
+            <h2 style="text-align: center;color:orange;" *ngIf="this.currentTime > 15 && this.currentTime <= 30"> {{ this.currentTime }}</h2>
+            <h2 style="text-align: center;color:red;"  *ngIf="this.currentTime <= 15"> {{ this.currentTime }}</h2>
         </div>
     </div>
     <div class="row col-sm-4 col-sm-offset-4">
@@ -176,7 +179,7 @@
 </div>
 <div class="row" style="margin-bottom: 2%" *ngIf='this.partyFinish'>
     <div class="col-sm-12">
-        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer != ''">LE JOUEUR " <span style="color: #5cb85c"> {{ this.winnerPlayer }} </span>" GAGNE LA PARTIE. Si vous souhaitez rejouer, veuiller vous remettre prêt.</h2>
-        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer === ''">LA PARTIE SE FINIS SUR UNE " <span style="color: #5cb85c">EGALITE</span>. Si vous souhaitez rejouer, veuiller vous remettre prêt.</h2>
+        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer != ''">LE JOUEUR " <span style="color: #5cb85c"> {{ this.winnerPlayer }} </span>" GAGNE LA PARTIE. Si vous souhaitez rejouer, veuillez vous remettre prêt.</h2>
+        <h2 class="nav-item" style="text-align: center;" *ngIf="this.winnerPlayer === ''">LA PARTIE SE FINIS SUR UNE " <span style="color: #5cb85c">EGALITE</span>. Si vous souhaitez rejouer, veuillez vous remettre prêt.</h2>
     </div>
 </div>
