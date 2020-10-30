@@ -24,6 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "bootstrap": "^3.3.7",
     "rxjs": "~6.5.5",
+    "rxjs-compat": "^6.6.3",
     "sha.js": "^2.4.11",
     "socketio-auth": "^0.1.1",
     "tslib": "^2.0.0",
